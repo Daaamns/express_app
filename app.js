@@ -1,7 +1,11 @@
 const express = require("express");
 const app = express();
 
-const port = 5000;
+const welcome = (req, res) => {
+  res.send("Welcome to my favorite movie list");
+};
+
+app.get("/", welcome);
 
 const movies = [
   {
@@ -30,12 +34,6 @@ const movies = [
   },
 ];
 
-const welcome = (req, res) => {
-  res.send("Welcome to my favorite movie list");
-};
-
-app.get("/", welcome);
-
 const moviesList = (req, res) => {
   res.status(200).json(movies);
 };
@@ -43,31 +41,36 @@ const moviesList = (req, res) => {
 app.get("/api/movies", moviesList);
 
 const getMovies = (req, res) => {
-  const movieId = parseInt(req.params.id);
-  let theMovie = null;
+  const id = parseInt(req.params.id);
+  // let theMovie = null;
 
-  for (i = 0; i < movies.length; i++) {
-    if (movies[i].id === movieId) {
-      theMovie = movies[i];
-    }
-  }
+  // for (i = 0; i < movies.length; i++) {
+  //   if (movies[i].id === movieId) {
+  //     theMovie = movies[i];
+  //   }
+  // }
 
-  if (theMovie) {
-    res.status(200).json(theMovie);
+  const movie = movies.find((movie) => movie.id === id);
+
+  if (movie != null) {
+    res.status(200).json(movie);
   } else {
-    res.status(404).json("Error");
+    res.sendStatus(404);
+    // res.status(404).json("Error");
   }
 };
 
 app.get("/api/movies/:id", getMovies);
 
-app.listen(port, (err) => {
-  if (err) {
-    console.error("Something bad happened");
-  } else {
-    console.log(`Server is listening on ${port}`);
-  }
-});
+module.exports = app;
+
+// app.listen(port, (err) => {
+//   if (err) {
+//     console.error("Something bad happened");
+//   } else {
+//     console.log(`Server is listening on ${port}`);
+//   }
+// });
 
 // const welcomeName = (req, res) => {
 //   res.send(`Wemcome ${req.params.name}`);
